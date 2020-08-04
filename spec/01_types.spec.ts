@@ -239,4 +239,145 @@ describe ('types in Typescript', () => {
         }
         );
     });
+    describe('object literals', ()=> {
+        it('have an implicit type', () => {
+            const book = {
+                title: 'Reality', 
+                author: 'Kingsley', 
+                publisher: 'Random House', 
+                year: 2008
+            };
+        });
+        it('explicit object literals with an interface', () =>{
+            interface Book{
+                title:string;
+                author: string;
+                publisher: string;
+                year:number
+                subtitle?:string;//might have a subtitle, ? makes it optional
+            };
+            const reality: Book = {
+                title: 'Reality', 
+                author: 'Kingsley', 
+                publisher: 'Random House', 
+                year: 2008
+        };
+        const hw: Book ={
+            title: 'High Weirdness', 
+            author: 'Erik Davis', 
+            publisher: 'OUP', 
+            year: 2017, 
+            //can't now add somethign that's not in the interface itself
+        }
+    
+    });
+    it('expando objects', () => {
+        interface Book{
+            title:string;
+            author: string;
+            publisher: string;
+            year:number
+            subtitle?:string;//might have a subtitle, ? makes it optional
+            [key: string]: any
+        };
+
+        const realist: Book = {
+            title: "harry potter", 
+            author: "J.K. Rowling", 
+            publisher: "unknown", 
+            year: 1234, 
+            subtitle: "The wizard who doesn't follow directions",
+            genre:  'Philosophy', 
+            reviews: ['Interesting, Boring'] 
+
+
+        }
+
+        interface Vehicle {
+                vin: string;
+                make: string;
+                model: string;
+        }
+
+        interface Vehicles {
+            [vin: string] : Vehicle
+        }
+
+        const vehicles: Vehicles = {
+            '928398298' : {vin: '928398298',  make: 'Honda', model: 'Pilot' }, 
+            'J3779739' : {vin:'J3779739', make: 'Chevy', model: 'Bolt' }
+        }
+
+        expect(vehicles['J3779739'].model).toBe('Bolt');
+
+        interface Dictionary<T> {
+            [key: string] : T
+        }
+
+        const library: Dictionary<Book> = {
+            'Reality' : realist,
+            'High Weirdness': {title: 'High Wierdness', author: 'Davis', publisher: 'MIT', year: 2018}
+        }
+
+        expect(library['High Weirdness'].author).toBe('Davis');
+    });
+
+    it('structural typing - a.k.a duck typing', () =>{
+        function logMessage (message: {body: string}){//message is an object wiht a body property that is a string
+            console.log(`At ${new Date().toISOString()} you got the following message: ${message.body}`);
+        }
+        logMessage({body: 'TACOS!!'});
+
+        const phoneCall = {
+            from: 'Mom', 
+            body: 'Call me, you slacker!'
+        }
+        logMessage(phoneCall);
+    });
+//CHECK FOR HIS CODE HERE ??
+///////
+
+describe('function literals', () => {
+    it('three different ways to declare them.', () => {
+        //named function
+        function add(a:number, b:number): number{
+            return a+ b;
+        }
+
+        //anonymous functions have to be declared before they are used
+        const subtract = (a: number, b: number): number => a-b;
+        
+        const multiply = function (a: number, b: number): number {
+            return a * b;
+        }
+
+        expect(add(10,2)).toBe(12);
+        expect(subtract(10, 2)).toBe(8);
+        expect(multiply(3,3)).toBe(9);
+        expect(((a:number, b:number) => a/b)(10,2)).toBe(5); //this is js tricks
+
+    
+    });
+
+    it('a couple quick details about the syntax for arrow functions', () => {
+        type MathOp = (a:number, b:number) => number;
+
+        const add:MathOp = (a,b) => a + b;
+
+        const division:MathOp = (a, b) => {
+            if(b === 0){
+                throw new Error('Are you trying to open a black hole?!');
+            }
+            else{
+                return a/b;
+            }
+            }
+            type Identity=(a: number) => number;
+
+            const mockingBird:Identity = (a) =>a;//don't technically need those parens
+        
+        });
+    });
+})
 });
+
